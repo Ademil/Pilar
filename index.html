@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APavan_Pré-Dimensionamento de Pilares · NBR 6118</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f13;
+    --surface: #16181f;
+    --surface2: #1e2029;
+    --border: #2a2d38;
+    --accent: #e8c547;
+    --accent2: #4fd1c5;
+    --danger: #fc6b57;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --green: #6dde9a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,197,71,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,197,71,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    margin-bottom: 48px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 10px;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Layout */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Section */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    background: rgba(232,197,71,0.1);
+    padding: 2px 7px;
+    border-radius: 2px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .section-body { padding: 20px; }
+
+  /* Form fields */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  label span {
+    color: var(--accent);
+    font-size: 10px;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  input[type=number] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    padding: 10px 56px 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    border-radius: 2px;
+    -moz-appearance: textfield;
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  input[type=number]:focus { border-color: var(--accent); }
+
+  .unit {
+    position: absolute;
+    right: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  /* Info note */
+  .info-note {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid var(--border);
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    line-height: 1.6;
+  }
+
+  /* Calc button */
+  .btn-calc {
+    width: 100%;
+    background: var(--accent);
+    color: #0e0f13;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px;
+    border: none;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: all 0.15s;
+    border-radius: 2px;
+  }
+
+  .btn-calc:hover { background: #f0d060; transform: translateY(-1px); }
+  .btn-calc:active { transform: translateY(0); }
+
+  /* Results */
+  #results { display: none; }
+  #results.visible { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 0;
+  }
+
+  .results-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--accent2);
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 20px; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    padding: 0 20px 20px;
+  }
+
+  .result-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 14px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent2);
+  }
+
+  .result-card.highlight::before { background: var(--accent); }
+  .result-card.ok::before { background: var(--green); }
+
+  .rc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .rc-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .rc-unit {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 3px;
+  }
+
+  /* Steps table */
+  .steps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .steps-table tr:not(:last-child) { border-bottom: 1px solid var(--border); }
+
+  .steps-table td {
+    padding: 10px 20px;
+    vertical-align: top;
+  }
+
+  .steps-table td:first-child { color: var(--muted); width: 220px; }
+
+  .steps-table td:last-child { color: var(--accent); text-align: right; }
+
+  .formula {
+    padding: 8px 20px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  /* Final result */
+  .final-box {
+    margin: 20px;
+    padding: 20px;
+    background: rgba(232,197,71,0.06);
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    text-align: center;
+  }
+
+  .final-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .final-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .final-detail {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .warning-box {
+    margin: 0 20px 20px;
+    padding: 12px 16px;
+    background: rgba(252,107,87,0.08);
+    border: 1px solid var(--danger);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--danger);
+    line-height: 1.6;
+    border-radius: 2px;
+  }
+
+  .badge-ok {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    background: rgba(109,222,154,0.12);
+    color: var(--green);
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="tag">NBR 6118 · Estruturas de Concreto</div>
+    <h1>APavan_Pré-Dimensionamento<br><span>dos Pilares</span></h1>
+    <p class="subtitle">// Estimativa da seção transversal por área de influência</p>
+  </header>
+
+  <!-- Dados da Laje -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Dados de Carregamento</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="field">
+          <label>Área de Influência do Pilar (A) <span>m²</span></label>
+          <div class="input-wrap">
+            <input type="number" id="A" value="14" step="0.5" min="1">
+            <span class="unit">m²</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Carregamento total na laje (q) <span>kN/m²</span></label>
+          <div class="input-wrap">
+            <input type="number" id="q" value="12" step="0.5" min="1">
+            <span class="unit">kN/m²</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Número de pavimentos (n)</label>
+          <div class="input-wrap">
+            <input type="number" id="n" value="12" step="1" min="1">
+            <span class="unit">pav</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Coeficiente de ponderação (γf)</label>
+          <div class="input-wrap">
+            <input type="number" id="gf" value="1.4" step="0.05" min="1" max="2">
+            <span class="unit">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dados do Concreto -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Propriedades dos Materiais</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="field">
+          <label>Resistência característica do concreto (fck)</label>
+          <select id="fck">
+            <option value="20">C20 — fck = 20 MPa</option>
+            <option value="25">C25 — fck = 25 MPa</option>
+            <option value="30" selected>C30 — fck = 30 MPa</option>
+            <option value="35">C35 — fck = 35 MPa</option>
+            <option value="40">C40 — fck = 40 MPa</option>
+            <option value="45">C45 — fck = 45 MPa</option>
+            <option value="50">C50 — fck = 50 MPa</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Taxa de armadura (ρ) <span>entre 0,4% e 8%</span></label>
+          <div class="input-wrap">
+            <input type="number" id="rho" value="1" step="0.1" min="0.4" max="8">
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+      <div class="info-note">
+        σsd,0,002 = E · εyd = 210.000 × 0,002 = <strong style="color:var(--accent)">420 MPa</strong> &nbsp;|&nbsp;
+        fyd = fyk / 1,15 = 500 / 1,15 ≈ 434,78 MPa &nbsp;|&nbsp;
+        Tensão na armadura a 2‰ (Lei de Hooke)
+      </div>
+    </div>
+  </div>
+
+  <!-- Dimensões -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Dimensões da Seção</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="field">
+          <label>Largura base (b) — dimensão conhecida</label>
+          <div class="input-wrap">
+            <input type="number" id="b" value="25" step="5" min="10">
+            <span class="unit">cm</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Dimensão mínima (NBR 6118)</label>
+          <div class="input-wrap">
+            <input type="number" id="bmin" value="14" step="1" min="14">
+            <span class="unit">cm</span>
+          </div>
+        </div>
+      </div>
+      <div class="info-note">
+        Dimensão mínima de pilares: <strong style="color:var(--accent)">14 cm</strong> (NBR 6118 item 13.2.3) &nbsp;|&nbsp;
+        A seção calculada é a imediatamente acima das fundações.
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calcular()">▶ CALCULAR PRÉ-DIMENSIONAMENTO</button>
+
+  <!-- Results -->
+  <div class="section" id="results">
+    <div class="results-header">
+      <span class="results-title">// Resultados do Cálculo</span>
+      <span id="badge-ok" class="badge-ok" style="display:none">✓ SEÇÃO OK</span>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Steps -->
+    <table class="steps-table">
+      <tr>
+        <td>Força Normal Característica<br><span style="font-size:10px;color:#4fd1c5">Nk = A · q · n</span></td>
+        <td><span id="r_Nk">—</span></td>
+      </tr>
+      <tr>
+        <td>Força Normal de Cálculo<br><span style="font-size:10px;color:#4fd1c5">Nd = Nk · γf</span></td>
+        <td><span id="r_Nd">—</span></td>
+      </tr>
+      <tr>
+        <td>Resistência de cálculo do concreto<br><span style="font-size:10px;color:#4fd1c5">fcd = fck / γc = fck / 1,4</span></td>
+        <td><span id="r_fcd">—</span></td>
+      </tr>
+      <tr>
+        <td>Tensão de compressão do concreto<br><span style="font-size:10px;color:#4fd1c5">σc = 0,85 · fcd</span></td>
+        <td><span id="r_sc">—</span></td>
+      </tr>
+      <tr>
+        <td>Parcela da armadura<br><span style="font-size:10px;color:#4fd1c5">ρ · σsd,0,002</span></td>
+        <td><span id="r_rhoS">—</span></td>
+      </tr>
+      <tr>
+        <td>Área de concreto necessária<br><span style="font-size:10px;color:#4fd1c5">Ac = Nd / (σc + ρ·σsd)</span></td>
+        <td><span id="r_Ac">—</span></td>
+      </tr>
+    </table>
+
+    <div class="formula">Ac = Nd / (0,85·fcd + ρ·σsd0,002)</div>
+    <div class="divider"></div>
+
+    <!-- Result Cards -->
+    <div class="result-grid">
+      <div class="result-card highlight">
+        <div class="rc-label">ÁREA NECESSÁRIA (Ac)</div>
+        <div class="rc-value" id="rc_Ac">—<span class="rc-unit">cm²</span></div>
+      </div>
+      <div class="result-card highlight">
+        <div class="rc-label">LARGURA (b)</div>
+        <div class="rc-value" id="rc_b">—<span class="rc-unit">cm</span></div>
+      </div>
+      <div class="result-card highlight">
+        <div class="rc-label">ALTURA (h = Ac/b)</div>
+        <div class="rc-value" id="rc_h">—<span class="rc-unit">cm</span></div>
+      </div>
+      <div class="result-card ok">
+        <div class="rc-label">SEÇÃO ADOTADA</div>
+        <div class="rc-value" id="rc_sec">—</div>
+      </div>
+      <div class="result-card">
+        <div class="rc-label">ÁREA ADOTADA</div>
+        <div class="rc-value" id="rc_Aad">—<span class="rc-unit">cm²</span></div>
+      </div>
+      <div class="result-card">
+        <div class="rc-label">TAXA ρ EFETIVA</div>
+        <div class="rc-value" id="rc_rhoef">—<span class="rc-unit">%</span></div>
+      </div>
+    </div>
+
+    <!-- Warning -->
+    <div class="warning-box" id="warnings" style="display:none"></div>
+
+    <!-- Final box -->
+    <div class="final-box">
+      <div class="final-label">Seção Transversal Recomendada</div>
+      <div class="final-value" id="final_sec">—</div>
+      <div class="final-detail" id="final_detail">—</div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const SIG_SD = 420; // MPa
+
+function arredondar5(v) {
+  return Math.ceil(v / 5) * 5;
+}
+
+function calcular() {
+  const A   = parseFloat(document.getElementById('A').value);
+  const q   = parseFloat(document.getElementById('q').value);
+  const n   = parseFloat(document.getElementById('n').value);
+  const gf  = parseFloat(document.getElementById('gf').value);
+  const fck = parseFloat(document.getElementById('fck').value); // MPa
+  const rho = parseFloat(document.getElementById('rho').value) / 100; // decimal
+  const b   = parseFloat(document.getElementById('b').value); // cm
+  const bmin= parseFloat(document.getElementById('bmin').value); // cm
+
+  // --- Cálculos ---
+  const Nk  = A * q * n; // kN
+  const Nd  = Nk * gf;   // kN
+  const fcd = fck / 1.4; // MPa
+  const sc  = 0.85 * fcd; // MPa
+  const rhoS= rho * SIG_SD; // MPa
+
+  // Ac em cm² — convertendo Nd de kN para kN: 1 kN/cm² = 10 MPa
+  // sc em MPa = kN/cm² × 10 → divide por 10 to get kN/cm²
+  const sc_kNcm2 = sc / 10;
+  const rhoS_kNcm2 = rhoS / 10;
+  const Ac  = Nd / (sc_kNcm2 + rhoS_kNcm2); // cm²
+
+  // Altura calculada
+  const h_calc = Ac / b; // cm
+  const h_adopt = arredondar5(h_calc);
+  const b_adopt = b >= bmin ? b : bmin;
+  const Ac_adopt = b_adopt * h_adopt;
+
+  // --- Preencher steps ---
+  document.getElementById('r_Nk').textContent   = Nk.toFixed(0) + ' kN';
+  document.getElementById('r_Nd').textContent   = Nd.toFixed(2) + ' kN';
+  document.getElementById('r_fcd').textContent  = fcd.toFixed(2) + ' MPa';
+  document.getElementById('r_sc').textContent   = sc.toFixed(2) + ' MPa';
+  document.getElementById('r_rhoS').textContent = rhoS.toFixed(2) + ' MPa';
+  document.getElementById('r_Ac').textContent   = Ac.toFixed(1) + ' cm²';
+
+  // --- Cards ---
+  document.getElementById('rc_Ac').innerHTML  = Ac.toFixed(1) + '<span class="rc-unit">cm²</span>';
+  document.getElementById('rc_b').innerHTML   = b_adopt.toFixed(0) + '<span class="rc-unit">cm</span>';
+  document.getElementById('rc_h').innerHTML   = h_calc.toFixed(2) + '<span class="rc-unit">cm</span>';
+  document.getElementById('rc_sec').innerHTML = b_adopt + ' × ' + h_adopt + '<span class="rc-unit">cm</span>';
+  document.getElementById('rc_Aad').innerHTML = Ac_adopt.toFixed(0) + '<span class="rc-unit">cm²</span>';
+  const rho_ef = rho * 100;
+  document.getElementById('rc_rhoef').innerHTML = rho_ef.toFixed(1) + '<span class="rc-unit">%</span>';
+
+  // --- Final ---
+  document.getElementById('final_sec').textContent = b_adopt + ' × ' + h_adopt + ' cm';
+  document.getElementById('final_detail').textContent =
+    `Área calculada: ${Ac.toFixed(1)} cm²  |  Área adotada: ${Ac_adopt} cm²  |  Nd: ${Nd.toFixed(1)} kN`;
+
+  // --- Warnings ---
+  let warns = [];
+  if (b < bmin)  warns.push(`⚠ Largura b = ${b} cm é inferior ao mínimo de ${bmin} cm (NBR 6118 item 13.2.3). Adotar b = ${bmin} cm.`);
+  if (rho * 100 < 0.4) warns.push(`⚠ Taxa de armadura ρ = ${(rho*100).toFixed(2)}% abaixo do mínimo de 0,4% (NBR 6118 item 17.3.5).`);
+  if (rho * 100 > 8.0) warns.push(`⚠ Taxa de armadura ρ = ${(rho*100).toFixed(2)}% acima do máximo de 8% na região de emenda.`);
+  if (fck < 25) warns.push(`⚠ NBR 6118 recomenda fck ≥ 25 MPa para pilares em estruturas comuns.`);
+
+  const wBox = document.getElementById('warnings');
+  if (warns.length) {
+    wBox.style.display = 'block';
+    wBox.innerHTML = warns.join('<br>');
+  } else {
+    wBox.style.display = 'none';
+    document.getElementById('badge-ok').style.display = 'inline-block';
+  }
+
+  // Show results
+  const res = document.getElementById('results');
+  res.classList.add('visible');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Allow Enter key
+document.addEventListener('keydown', e => { if(e.key === 'Enter') calcular(); });
+</script>
+</body>
+</html>
